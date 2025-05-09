@@ -1,3 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Startup Growth Visualization Documentation</title>
+  <style>
+    body { font-family: sans-serif; line-height: 1.6; max-width: 800px; margin: auto; padding: 2em; }
+    h1, h2 { color: #333366; }
+    table { width: 100%; border-collapse: collapse; margin: 1em 0; }
+    th, td { border: 1px solid #ccc; padding: 0.5em; text-align: left; }
+    th { background-color: #f0f0f0; }
+    a { color: #1a0dab; }
+  </style>
+</head>
+<body>
+  <h1>Documentation: Visualizing Startup Growth by Country (D3 v3)</h1>
+
+  <h2>🎯 Project Goal</h2>
+  <p>
+    The goal of this visualization was to identify <strong>which countries have the fastest-growing startups</strong>,
+    based on average growth rate across companies. This supports broader questions about geographic patterns in startup
+    success and ecosystem performance.
+  </p>
+
+  <h2>🧠 Design Process</h2>
+  <p>
+    Initially, I explored multiple questions using the dataset <code>startup_growth_investment_data.csv</code>,
+    which includes 9 attributes such as funding rounds, investment amount, and growth rate. I was particularly drawn
+    to geographic comparisons.
+  </p>
+  <p>
+    I considered the following visualization types:
+    <ul>
+      <li>A choropleth map using country-level averages</li>
+      <li>A scatterplot comparing funding rounds and growth rate</li>
+      <li>A bar chart ranking countries by growth</li>
+    </ul>
+    After reviewing the data and clarity of output, I chose a bar chart, as it provides a direct, ranked comparison
+    without the noise of a geographic projection or unclear correlation.
+  </p>
+  <p>
+    I created hand-drawn sketches comparing horizontal vs vertical bar layouts, and planned for tooltip inclusion.
+    The sketch stage helped finalize the decision to sort countries by growth rate and use D3 v3 for compatibility.
+  </p>
+
+  <h2>🎨 Design Rationale</h2>
+  <table>
+    <tr><th>Feature</th><th>Reasoning</th></tr>
+    <tr><td>Bar Chart</td><td>Clear for ranked comparison of values across categories</td></tr>
+    <tr><td>X-axis: Country</td><td>Categorical variable for comparison</td></tr>
+    <tr><td>Y-axis: Avg Growth Rate (%)</td><td>Quantitative representation of core question</td></tr>
+    <tr><td>Color: Steelblue / Orange on highlight</td><td>Simple color cue with user feedback on selection</td></tr>
+    <tr><td>Tooltip</td><td>Display exact values without cluttering the chart</td></tr>
+    <tr><td>D3 v3</td><td>Retrofit practice and legacy browser compatibility</td></tr>
+  </table>
+
+  <h2>🔍 Insights & Findings</h2>
+  <p>
+    Using the vertical bar chart with dropdown filtering, I found that:
+    <ul>
+      <li>Some lesser-known countries showed very high startup growth rates</li>
+      <li>Countries with the most investment did not always have the highest average growth</li>
+      <li>Growth hotspots aren’t always in the traditional startup hubs</li>
+    </ul>
+  </p>
+  <p><em>Screenshot placeholder for interactive chart and tooltip example.</em></p>
+
+  <h2>📁 Data & Tools</h2>
+  <ul>
+    <li><strong>Dataset:</strong> <code>startup_growth_investment_data.csv</code></li>
+    <li><strong>Preprocessing:</strong> Grouped by country, averaged <code>Growth Rate (%)</code></li>
+    <li><strong>Tools:</strong> Python (pandas), D3.js v3, HTML/CSS</li>
+  </ul>
+
+  <h2>🔗 Resources</h2>
+  <p>
+    <a href="index.html">🔙 Back to Visualization</a> | 
+    <a href="https://youtube.com/YOUR_VIDEO_ID" target="_blank">🎥 Watch YouTube Video</a>
+  </p>
+</body>
+</html>
 
 <!DOCTYPE html>
 <html>

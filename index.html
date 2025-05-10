@@ -27,13 +27,13 @@
       pointer-events: none;
       display: none;
     }
-    select { margin-bottom: 10px; padding: 4px; }
+    select { margin-bottom: 10px; }
   </style>
 </head>
 <body>
   <h2>Compare Startup Growth Rates by Country</h2>
-  <label for="countrySelect">Select Country:</label>
-  <select id="countrySelect"></select>
+  <label for="countrySelect">Select Countries:</label>
+  <select id="countrySelect" multiple size="10"></select>
   <svg width="960" height="600"></svg>
   <div class="tooltip"></div>
 
@@ -56,7 +56,6 @@
       });
 
       var select = d3.select("#countrySelect");
-      select.append("option").attr("value", "all").text("-- All Countries --");
       data.forEach(function(d) {
         select.append("option").attr("value", d.Country).text(d.Country);
       });
@@ -66,8 +65,8 @@
 
       function updateChart() {
         svg.selectAll("*").remove();
-        var selected = document.getElementById("countrySelect").value;
-        var filteredData = selected === "all" ? data : data.filter(d => d.Country === selected);
+        var selected = Array.from(document.getElementById("countrySelect").selectedOptions).map(o => o.value);
+        var filteredData = selected.length ? data.filter(d => selected.indexOf(d.Country) >= 0) : [];
 
         filteredData.sort(function(a, b) { return b["Growth Rate (%)"] - a["Growth Rate (%)"]; });
         x.domain(filteredData.map(function(d) { return d.Country; }));

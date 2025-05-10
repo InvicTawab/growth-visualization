@@ -27,13 +27,13 @@
       pointer-events: none;
       display: none;
     }
-    select { margin-bottom: 10px; }
+    select { margin-bottom: 10px; padding: 4px; }
   </style>
 </head>
 <body>
   <h2>Compare Startup Growth Rates by Country</h2>
-  <label for="countrySelect">Highlight Countries:</label>
-  <select id="countrySelect" multiple size="6"></select>
+  <label for="countrySelect">Select Country:</label>
+  <select id="countrySelect"></select>
   <svg width="960" height="600"></svg>
   <div class="tooltip"></div>
 
@@ -55,61 +55,64 @@
         d["Growth Rate (%)"] = +d["Growth Rate (%)"];
       });
 
-      data.sort(function(a, b) { return b["Growth Rate (%)"] - a["Growth Rate (%)"]; });
-
-      x.domain(data.map(function(d) { return d.Country; }));
-      y.domain([0, d3.max(data, function(d) { return d["Growth Rate (%)"]; })]);
-
       var select = d3.select("#countrySelect");
+      select.append("option").attr("value", "all").text("-- All Countries --");
       data.forEach(function(d) {
         select.append("option").attr("value", d.Country).text(d.Country);
       });
 
-      svg.append("g")
-        .attr("class", "x axis")
-        .attr("transform", "translate(0," + height + ")")
-        .call(d3.svg.axis().scale(x).orient("bottom"))
-        .selectAll("text")
-        .attr("dx", "-0.8em")
-        .attr("dy", ".15em")
-        .attr("transform", "rotate(-45)");
+      select.on("change", updateChart);
+      updateChart();
 
-      svg.append("g")
-        .attr("class", "y axis")
-        .call(d3.svg.axis().scale(y).orient("left"))
-        .append("text")
-        .attr("transform", "rotate(-90)")
-        .attr("y", -50)
-        .attr("dy", ".71em")
-        .style("text-anchor", "end")
-        .text("Avg Growth Rate (%)");
+      function updateChart() {
+        svg.selectAll("*").remove();
+        var selected = document.getElementById("countrySelect").value;
+        var filteredData = selected === "all" ? data : data.filter(d => d.Country === selected);
 
-      var bars = svg.selectAll(".bar")
-        .data(data)
-        .enter().append("rect")
-        .attr("class", "bar")
-        .attr("x", function(d) { return x(d.Country); })
-        .attr("width", x.rangeBand())
-        .attr("y", function(d) { return y(d["Growth Rate (%)"]); })
-        .attr("height", function(d) { return height - y(d["Growth Rate (%)"]); })
-        .on("mouseover", function(d) {
-          tooltip.style("display", "block")
-                 .html("<strong>" + d.Country + "</strong><br>" + d["Growth Rate (%)"].toFixed(2) + "%");
-        })
-        .on("mousemove", function() {
-          tooltip.style("left", (d3.event.pageX + 10) + "px")
-                 .style("top", (d3.event.pageY - 28) + "px");
-        })
-        .on("mouseout", function() {
-          tooltip.style("display", "none");
-        });
+        filteredData.sort(function(a, b) { return b["Growth Rate (%)"] - a["Growth Rate (%)"]; });
+        x.domain(filteredData.map(function(d) { return d.Country; }));
+        y.domain([0, d3.max(filteredData, function(d) { return d["Growth Rate (%)"]; })]);
 
-      select.on("change", function() {
-        var selected = Array.from(this.selectedOptions).map(o => o.value);
-        bars.attr("class", function(d) {
-          return selected.indexOf(d.Country) >= 0 ? "bar highlight" : "bar";
-        });
-      });
+        svg.append("g")
+          .attr("class", "x axis")
+          .attr("transform", "translate(0," + height + ")")
+          .call(d3.svg.axis().scale(x).orient("bottom"))
+          .selectAll("text")
+          .attr("dx", "-0.8em")
+          .attr("dy", ".15em")
+          .attr("transform", "rotate(-45)");
+
+        svg.append("g")
+          .attr("class", "y axis")
+          .call(d3.svg.axis().scale(y).orient("left").ticks(Math.ceil(y.domain()[1] / 5)))
+          .append("text")
+          .attr("transform", "rotate(-90)")
+          .attr("y", -50)
+          .attr("dy", ".71em")
+          .style("text-anchor", "end")
+          .text("Avg Growth Rate (%)");
+
+        var bars = svg.selectAll(".bar")
+          .data(filteredData, function(d) { return d.Country; });
+
+        bars.enter().append("rect")
+          .attr("class", "bar")
+          .attr("x", function(d) { return x(d.Country); })
+          .attr("width", x.rangeBand())
+          .attr("y", function(d) { return y(d["Growth Rate (%)"]); })
+          .attr("height", function(d) { return height - y(d["Growth Rate (%)"]); })
+          .on("mouseover", function(d) {
+            tooltip.style("display", "block")
+                   .html("<strong>" + d.Country + "</strong><br>" + d["Growth Rate (%)"].toFixed(2) + "%");
+          })
+          .on("mousemove", function() {
+            tooltip.style("left", (d3.event.pageX + 10) + "px")
+                   .style("top", (d3.event.pageY - 28) + "px");
+          })
+          .on("mouseout", function() {
+            tooltip.style("display", "none");
+          });
+      }
     });
   </script>
 </body>
